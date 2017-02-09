@@ -1,0 +1,20 @@
+# Created by .ignore support plugin (hsz.mobi)
+.idea/compiler.xml
+.idea/copyright/
+.idea/encodings.xml
+.idea/gradle.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/workspace.xml
+app/build/
+gen/
+gradle.properties
+gradle/
+gradlew
+gradlew.bat
+local.properties
+/.idea/
+.gradle/
+.idea/
+build/
