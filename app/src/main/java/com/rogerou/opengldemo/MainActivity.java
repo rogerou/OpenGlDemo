@@ -2,7 +2,6 @@ package com.rogerou.opengldemo;
 
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
-import android.opengl.Matrix;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -30,9 +29,9 @@ public class MainActivity extends AppCompatActivity {
 
     private class MyRender implements GLSurfaceView.Renderer {
         private Triangle mTriangle;
-        private final float[] mMVPMatrix = new float[16];
-        private final float[] mProjectionMatrix = new float[16];
-        private final float[] mViewMatrix = new float[16];
+//        private final float[] mMVPMatrix = new float[16];
+//        private final float[] mProjectionMatrix = new float[16];
+//        private final float[] mViewMatrix = new float[16];
 
         @Override
         public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
@@ -42,24 +41,14 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onSurfaceChanged(GL10 gl10, int i, int i1) {
-            GLES20.glViewport(0, 0, i, i1);
+//            GLES20.glViewport(0, 0, i, i1);
             mTriangle = new Triangle();
-            float ratio = (float) i / i1;
-            Matrix.frustumM(mProjectionMatrix, 0, -1, 1, -ratio, ratio, 3, 7);
-
-
         }
 
         @Override
         public void onDrawFrame(GL10 gl10) {
+            GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 //            GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-            mTriangle.draw();
-            Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
-
-            // Calculate the projection and view transformation
-            Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
-
-            // Draw shape
             mTriangle.draw();
         }
     }
@@ -71,12 +60,12 @@ public class MainActivity extends AppCompatActivity {
 
         static final int CORDS_PER_VERTEX = 3;
         final float[] triangleCords = {
-                0, 1, 0.0f, // top
-                -0.5f, -1, 0.0f, // bottom left
-                1f, -1, 0.0f,  // bottom right
+                0.0f, 1.0f, 0.0f, // top
+                -1.0f, -1.0f, 0.0f, // bottom left
+                1.0f, -1.0f, 0.0f,  // bottom right
         };
 
-        float color[] = {0.63671875f, 0.76953125f, 0.22265625f, 1.0f};
+//        float color[] = {0.63671875f, 0.76953125f, 0.22265625f, 1.0f};
         private final String vertexShaderCode =
                 "attribute vec4 vPosition;" +
                         "void main() {" +
@@ -86,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         private final String fragmentShaderCode =
                 "precision mediump float;\n"
                         + "void main() {\n"
-                        + "  gl_FragColor = vec4(0.5,0,0,1);\n"
+                        + "  gl_FragColor = vec4(0,0,1,1);\n"
                         + "}";
         int mProgram;
         private int mPositionHandle;
@@ -97,29 +86,27 @@ public class MainActivity extends AppCompatActivity {
                     .order(ByteOrder.nativeOrder());
 
             mFloatBuffer = byteBuffer.asFloatBuffer();
-            mFloatBuffer.put(triangleCords)
-                    .position(0);
+            mFloatBuffer.put(triangleCords);
+            mFloatBuffer.position(0);
 
-
-            int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
-
-            int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
 
             mProgram = GLES20.glCreateProgram();
-
+            int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
+            int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
             GLES20.glAttachShader(mProgram, vertexShader);
             GLES20.glAttachShader(mProgram, fragmentShader);
             GLES20.glLinkProgram(mProgram);
+
+            mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
 
         }
 
         public void draw() {
             GLES20.glUseProgram(mProgram);
-            mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
             GLES20.glEnableVertexAttribArray(mPositionHandle);
             GLES20.glVertexAttribPointer(mPositionHandle, CORDS_PER_VERTEX, GLES20.GL_FLOAT, false, CORDS_PER_VERTEX * 4, mFloatBuffer);
-            mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");
-            GLES20.glUniform4fv(mColorHandle, 1, color, 0);
+//            mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");
+//            GLES20.glUniform4fv(mColorHandle, 1, color, 0);
             GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, triangleCords.length / CORDS_PER_VERTEX);
             GLES20.glDisableVertexAttribArray(mPositionHandle);
         }
