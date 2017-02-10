@@ -8,12 +8,12 @@ import android.opengl.GLSurfaceView;
 import android.opengl.GLUtils;
 import android.os.Bundle;
 
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
-
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
 
 public class TextureActivity extends Activity {
     private GLSurfaceView surface;
@@ -167,7 +167,7 @@ public class TextureActivity extends Activity {
 
             // Load a bitmap from resources folder and pass it to OpenGL
             // in the end, we recycle it to free unneeded resources
-            Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.background_profile);
+            Bitmap b = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
             GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, b, 0);
             b.recycle();
         }
