@@ -1,17 +1,33 @@
 package com.rogerou.opengldemo;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
+import android.graphics.Rect;
+import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatImageView;
 import android.view.View;
 import android.widget.Button;
 
 import com.rogerou.opengldemo.camera.MyCameraManger;
 import com.rogerou.opengldemo.controller.OpenGlController;
-import com.rogerou.opengldemo.filter.MyImageFilter;
+import com.rogerou.opengldemo.filter.MyImagefilter;
 
+import org.reactivestreams.Publisher;
+
+import java.io.ByteArrayOutputStream;
+import java.util.Observable;
+
+import io.reactivex.Flowable;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 import jp.co.cyberagent.android.gpuimage.GPUImageFilter;
 
 /**
@@ -21,7 +37,7 @@ import jp.co.cyberagent.android.gpuimage.GPUImageFilter;
 public class CameraActivity extends AppCompatActivity implements View.OnClickListener {
 
 
-    private android.opengl.GLSurfaceView glview;
+    private android.opengl.GLSurfaceView glview1;
     private android.widget.Button btn1;
     private android.widget.Button btn2;
     private OpenGlController mOpenGlController;
@@ -34,11 +50,11 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_camera);
         this.btn2 = (Button) findViewById(R.id.btn2);
         this.btn1 = (Button) findViewById(R.id.btn1);
-        this.glview = (GLSurfaceView) findViewById(R.id.gl_view);
+        this.glview1 = (GLSurfaceView) findViewById(R.id.gl_view1);
         btn1.setOnClickListener(this);
-
+        btn2.setOnClickListener(this);
         mOpenGlController = new OpenGlController(this);
-        mOpenGlController.setGLSurfaceView(glview);
+        mOpenGlController.setGLSurfaceView1(glview1);
         mCameraManger = new MyCameraManger();
         setUpCamera();
     }
@@ -87,17 +103,19 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn1:
-                if (mOpenGlController.getGPUImageFilter() instanceof MyImageFilter) {
+                if (mOpenGlController.getGPUImageFilter() instanceof MyImagefilter) {
                     btn1.setText("开启滤镜");
                     mOpenGlController.serFilter(new GPUImageFilter());
                 } else {
                     btn1.setText("关闭滤镜");
-                    mOpenGlController.serFilter(new MyImageFilter());
+                    mOpenGlController.serFilter(new MyImagefilter());
                 }
                 break;
             case R.id.btn2:
-
+                
+                
                 break;
         }
     }
+
 }

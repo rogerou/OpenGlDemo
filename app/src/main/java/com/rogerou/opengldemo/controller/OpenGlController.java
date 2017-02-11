@@ -18,7 +18,7 @@ public class OpenGlController {
 
     private final MyRender mMyRender;
     private GPUImageFilter mGPUImageFilter;
-    private GLSurfaceView mGLSurfaceView;
+    private GLSurfaceView mGLSurfaceView1;
     private final Context mContext;
 
     public OpenGlController(Context context) {
@@ -30,15 +30,14 @@ public class OpenGlController {
     public void serFilter(GPUImageFilter gpuImageFilter) {
         mGPUImageFilter = gpuImageFilter;
         mMyRender.setFilter(mGPUImageFilter);
-        mGLSurfaceView.requestRender();
+        mGLSurfaceView1.requestRender();
     }
 
-    public void setGLSurfaceView(GLSurfaceView glSurfaceView) {
-        mGLSurfaceView = glSurfaceView;
-        mGLSurfaceView.setEGLContextClientVersion(2);
-        mGLSurfaceView.setRenderer(mMyRender);
-        //
-        mGLSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+    public void setGLSurfaceView1(GLSurfaceView glSurfaceView) {
+        mGLSurfaceView1 = glSurfaceView;
+        mGLSurfaceView1.setEGLContextClientVersion(2);
+        mGLSurfaceView1.setRenderer(mMyRender);
+        mGLSurfaceView1.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
     }
 
     /**
@@ -47,7 +46,7 @@ public class OpenGlController {
     public void setUpCamera(final Camera camera, final int degrees, final boolean flipHorizontal,
                             final boolean flipVertical) {
         //开启不断渲染模式
-        mGLSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+        mGLSurfaceView1.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
         mMyRender.setUpSurfaceTexture(camera);
         Rotation rotation = Rotation.NORMAL;
         switch (degrees) {

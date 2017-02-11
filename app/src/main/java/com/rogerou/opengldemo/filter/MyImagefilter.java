@@ -6,7 +6,7 @@ import jp.co.cyberagent.android.gpuimage.GPUImageFilter;
  * Created by Administrator on 2017/2/10.
  */
 
-public class MyImageFilter extends GPUImageFilter {
+public class MyImagefilter extends GPUImageFilter {
 
     /**
      * uniform 由外部程序传递给 shader，就像是C语言里面的常量，shader 只能用不能改；
@@ -19,15 +19,18 @@ public class MyImageFilter extends GPUImageFilter {
             "varying highp vec2 textureCoordinate;\n" +
             " \n" +
             " uniform sampler2D inputImageTexture;\n" +
-            " \n" +
+//            "uniform sampler2D vTextureAlpha; \n" +
             " void main()\n" +
             " {\n" +
             "     lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);\n" +
-            "     \n" +
+//            "      textureColor.a = texture2D(vTextureAlpha,textureCoordinate)  \n" +
             "     gl_FragColor = vec4((vec3(1.0f) - textureColor.rgb), textureColor.w);\n" +
             " }";
 
-    public MyImageFilter() {
+
+    public MyImagefilter() {
         super(NO_FILTER_VERTEX_SHADER, FRAGMENT_SHADER);
     }
+
+
 }

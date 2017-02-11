@@ -151,6 +151,7 @@ public class MyRender implements GLSurfaceView.Renderer, Camera.PreviewCallback 
     public void onDrawFrame(GL10 gl10) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         runAll(runOnDraw);
+        //把效果绘制当前选择的纹理当中
         mFilter.onDraw(mGLTextureId, mGLCubeBuffer, mGLTextureBuffer);
         runAll(runOnDrawEnd);
         if (mSurfaceTexture != null) {
