@@ -2,10 +2,10 @@ package com.rogerou.opengldemo.camera;
 
 import android.content.Context;
 import android.graphics.SurfaceTexture;
+import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 
-import com.rogerou.opengldemo.GlsurfaceView.MyGLSurfaceView;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -14,7 +14,7 @@ import javax.microedition.khronos.opengles.GL10;
  * Created by Administrator on 2017/2/10.
  */
 
-public class CameraView extends MyGLSurfaceView implements SurfaceTexture.OnFrameAvailableListener {
+public class CameraView extends GLSurfaceView implements SurfaceTexture.OnFrameAvailableListener {
 
     private SurfaceTexture mSurfaceTexture;
 
@@ -44,9 +44,7 @@ public class CameraView extends MyGLSurfaceView implements SurfaceTexture.OnFram
 //    }
 
 
-    @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
-        super.onSurfaceCreated(gl10, eglConfig);
 //        mTextureId = OpenGlUtils.getExternalOESTextureID();
         if (mTextureId != -1) {
             mSurfaceTexture = new SurfaceTexture(0);
@@ -59,9 +57,7 @@ public class CameraView extends MyGLSurfaceView implements SurfaceTexture.OnFram
         super.surfaceDestroyed(holder);
     }
 
-    @Override
     public void onDrawFrame(GL10 gl10) {
-        super.onDrawFrame(gl10);
         if (mSurfaceTexture != null)
             mSurfaceTexture.updateTexImage();
     }
