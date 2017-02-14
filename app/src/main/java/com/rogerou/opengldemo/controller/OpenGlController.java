@@ -4,7 +4,12 @@ import android.content.Context;
 import android.hardware.Camera;
 import android.opengl.GLSurfaceView;
 
+import com.rogerou.opengldemo.filter.GroupFilter;
+import com.rogerou.opengldemo.filter.MyImagefilter;
 import com.rogerou.opengldemo.render.MyRender;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import jp.co.cyberagent.android.gpuimage.GPUImageFilter;
 import jp.co.cyberagent.android.gpuimage.Rotation;
@@ -27,11 +32,12 @@ public class OpenGlController {
         mMyRender = new MyRender(mGPUImageFilter);
     }
 
-    public void serFilter(GPUImageFilter gpuImageFilter) {
-        mGPUImageFilter = gpuImageFilter;
+    public void setFilter(GPUImageFilter gpuImageFilter) {
+        this.mGPUImageFilter = gpuImageFilter;
         mMyRender.setFilter(mGPUImageFilter);
         mGLSurfaceView1.requestRender();
     }
+
 
     public void setGLSurfaceView1(GLSurfaceView glSurfaceView) {
         mGLSurfaceView1 = glSurfaceView;

@@ -10,6 +10,8 @@ import android.widget.Button;
 
 import com.rogerou.opengldemo.camera.MyCameraManger;
 import com.rogerou.opengldemo.controller.OpenGlController;
+import com.rogerou.opengldemo.filter.GroupFilter;
+import com.rogerou.opengldemo.filter.MyFrameAnimationFilter;
 import com.rogerou.opengldemo.filter.MyImagefilter;
 
 import java.util.ArrayList;
@@ -30,8 +32,8 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     private OpenGlController mOpenGlController;
     private MyCameraManger mCameraManger;
     private Camera mCamera;
+    private boolean isFilter;
 
-    private List<GPUImageFilter> mGPUImageFilters;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +42,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         this.btn2 = (Button) findViewById(R.id.btn2);
         this.btn1 = (Button) findViewById(R.id.btn1);
         this.glview1 = (GLSurfaceView) findViewById(R.id.gl_view1);
-        mGPUImageFilters = new ArrayList<>();
         btn1.setOnClickListener(this);
         btn2.setOnClickListener(this);
         mOpenGlController = new OpenGlController(this);
@@ -91,21 +92,22 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onClick(View view) {
+        //实现多重渲染效果，但是帧动画无法共存！！！！暂时没思路
+        List<GPUImageFilter> gpuImageFilters = new ArrayList<>();
         switch (view.getId()) {
             case R.id.btn1:
-                if (mOpenGlController.getGPUImageFilter() instanceof MyImagefilter) {
-                    btn1.setText("开启滤镜");
-                    mOpenGlController.serFilter(new GPUImageFilter());
+                btn1.setText(isFilter ? "开启滤镜" : "关闭滤镜");
+                if (isFilter) {
+                    gpuImageFilters.add(new GPUImageFilter());
                 } else {
-                    btn1.setText("关闭滤镜");
-                    mOpenGlController.serFilter(new MyImagefilter());
+//                gpuImageFilters.add(new MyFrameAnimationFilter(getAssets()));
+                    gpuImageFilters.add(new MyImagefilter());
                 }
-                break;
-            case R.id.btn2:
-
-
-                break;
+                mOpenGlController.setFilter(new GroupFilter(gpuImageFilters));
+                isFilter = !isFilter;
         }
+
     }
 
 }
+

@@ -34,7 +34,6 @@ public class MyAnimationView extends GLSurfaceView implements GLSurfaceView.Rend
 
     private FloatBuffer mTextureBuffer;
     private FloatBuffer mVertexBuffer;
-
     //顶点坐标
     private float mVertext[] = {
             -1.0f, 1.0f,
@@ -82,6 +81,7 @@ public class MyAnimationView extends GLSurfaceView implements GLSurfaceView.Rend
         setRenderer(this);
         setRenderMode(RENDERMODE_WHEN_DIRTY);
         mAnimationFilter = new MyFrameAnimationFilter(getResources().getAssets());
+
     }
 
 
