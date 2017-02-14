@@ -23,9 +23,6 @@ import jp.co.cyberagent.android.gpuimage.GPUImageFilter;
 import jp.co.cyberagent.android.gpuimage.OpenGlUtils;
 
 
-/**
- * Description:
- */
 public class MyFrameAnimationFilter extends GPUImageFilter {
 
 
@@ -40,7 +37,7 @@ public class MyFrameAnimationFilter extends GPUImageFilter {
             "       gl_FragColor = color;\n" +
             "   }";
 
-    public static final String VERTEXT_SHADER = "attribute vec4 vPosition;\n" +
+    public static final String VERTEX_SHADER = "attribute vec4 vPosition;\n" +
             "   attribute vec2 vCoord;\n" +
             "   varying vec2 aCoord;\n" +
             "   uniform mat4 vMatrix;\n" +
@@ -53,7 +50,6 @@ public class MyFrameAnimationFilter extends GPUImageFilter {
     private int mTimeStep = 50;
     private boolean isPlay = false;
     private ByteBuffer mByteBuffer;
-    private int width, height;
 
     private int[] mTexture;
 
@@ -78,12 +74,13 @@ public class MyFrameAnimationFilter extends GPUImageFilter {
 
     @Override
     public void onInit() {
-        mGLProgId = OpenGlUtils.loadProgram(VERTEXT_SHADER, FRAGMENT_SHADER);
+        mGLProgId = OpenGlUtils.loadProgram(VERTEX_SHADER, FRAGMENT_SHADER);
         mHPosition = GLES20.glGetAttribLocation(mGLProgId, "vPosition");
         mHCoord = GLES20.glGetAttribLocation(mGLProgId, "vCoord");
         mHMatrix = GLES20.glGetUniformLocation(mGLProgId, "vMatrix");
         mHTexture = GLES20.glGetUniformLocation(mGLProgId, "vTexture");
         mTexture = new int[2];
+        //创建两个纹理，一个是用来展示图片，一个用来展示透明通道
         createEtcTexture(mTexture);
         mGlHAlpha = GLES20.glGetUniformLocation(mGLProgId, "vTextureAlpha");
     }
@@ -93,8 +90,6 @@ public class MyFrameAnimationFilter extends GPUImageFilter {
     public void onOutputSizeChanged(int width, int height) {
         super.onOutputSizeChanged(width, height);
         mByteBuffer = ByteBuffer.allocateDirect(ETC1.getEncodedDataSize(width, height));
-        this.width = width;
-        this.height = height;
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
@@ -135,8 +130,13 @@ public class MyFrameAnimationFilter extends GPUImageFilter {
         long startTime = System.currentTimeMillis();
         GLES20.glUniformMatrix4fv(mHMatrix, 1, false, matrix, 0);
         BindTexture();
-        draw(cubeBuffer, textureBuffer);
+        drawVertex(cubeBuffer, textureBuffer);
         long s = System.currentTimeMillis() - startTime;
+        //这里做了个时间的同步，
+        // 如果渲染时间不超过50ms的情况下，
+        // 强行让线程休眠到对应的时间再执行，
+        // 保持动画的相对同步
+        //可能还需要后续的处理，如超过下个50ms的情况下直接跳过此帧
         if (isPlay) {
             if (s < mTimeStep) {
                 try {
@@ -153,7 +153,7 @@ public class MyFrameAnimationFilter extends GPUImageFilter {
     }
 
     //进行纹理坐标和顶点坐标进行绘制
-    private void draw(FloatBuffer cubeBuffer, FloatBuffer textureBuffer) {
+    private void drawVertex(FloatBuffer cubeBuffer, FloatBuffer textureBuffer) {
         GLES20.glEnableVertexAttribArray(mHPosition);
         GLES20.glVertexAttribPointer(mHPosition, 2, GLES20.GL_FLOAT, false, 0, cubeBuffer);
         GLES20.glEnableVertexAttribArray(mHCoord);
@@ -207,7 +207,7 @@ public class MyFrameAnimationFilter extends GPUImageFilter {
         //生成纹理
         GLES20.glGenTextures(2, texture, 0);
         for (int i = 0; i < texture.length; i++) {
-            //生成纹理
+            //绑定纹理
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture[i]);
             //设置缩小过滤为使用纹理中坐标最接近的一个像素的颜色作为需要绘制的像素颜色
             GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);

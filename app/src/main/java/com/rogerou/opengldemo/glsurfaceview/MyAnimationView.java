@@ -30,7 +30,7 @@ import jp.co.cyberagent.android.gpuimage.OpenGlUtils;
 public class MyAnimationView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
 
-    private MyFrameAnimationFilter mDrawer;
+    private MyFrameAnimationFilter mAnimationFilter;
 
     private FloatBuffer mTextureBuffer;
     private FloatBuffer mVertexBuffer;
@@ -81,43 +81,43 @@ public class MyAnimationView extends GLSurfaceView implements GLSurfaceView.Rend
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         setRenderer(this);
         setRenderMode(RENDERMODE_WHEN_DIRTY);
-        mDrawer = new MyFrameAnimationFilter(getResources().getAssets());
+        mAnimationFilter = new MyFrameAnimationFilter(getResources().getAssets());
     }
 
 
     public void setAnimation(String path, int timeStep) {
-        mDrawer.setAnimation(this, path, timeStep);
+        mAnimationFilter.setAnimation(this, path, timeStep);
     }
 
     public void start() {
-        mDrawer.start();
+        mAnimationFilter.start();
     }
 
     public void stop() {
-        mDrawer.stop();
+        mAnimationFilter.stop();
     }
 
     public boolean isPlay() {
-        return mDrawer.isPlay();
+        return mAnimationFilter.isPlay();
     }
 
     public void setStateChangeListener(StateChangeListener listener) {
-        mDrawer.setStateChangeListener(listener);
+        mAnimationFilter.setStateChangeListener(listener);
     }
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        mDrawer.init();
+        mAnimationFilter.init();
     }
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        mDrawer.onOutputSizeChanged(width, height);
+        mAnimationFilter.onOutputSizeChanged(width, height);
     }
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        mDrawer.onDraw(OpenGlUtils.NO_TEXTURE, mVertexBuffer, mTextureBuffer);
+        mAnimationFilter.onDraw(OpenGlUtils.NO_TEXTURE, mVertexBuffer, mTextureBuffer);
     }
 
 }

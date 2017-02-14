@@ -19,11 +19,9 @@ public class MyImagefilter extends GPUImageFilter {
             "varying highp vec2 textureCoordinate;\n" +
             " \n" +
             " uniform sampler2D inputImageTexture;\n" +
-//            "uniform sampler2D vTextureAlpha; \n" +
             " void main()\n" +
             " {\n" +
             "     lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);\n" +
-//            "      textureColor.a = texture2D(vTextureAlpha,textureCoordinate)  \n" +
             "     gl_FragColor = vec4((vec3(1.0f) - textureColor.rgb), textureColor.w);\n" +
             " }";
 

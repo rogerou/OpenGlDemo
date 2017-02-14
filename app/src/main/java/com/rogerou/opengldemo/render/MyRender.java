@@ -16,7 +16,6 @@ import java.util.Queue;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import jp.co.cyberagent.android.gpuimage.GPUImage;
 import jp.co.cyberagent.android.gpuimage.GPUImageFilter;
 import jp.co.cyberagent.android.gpuimage.GPUImageNativeLibrary;
 import jp.co.cyberagent.android.gpuimage.OpenGlUtils;
@@ -78,7 +77,6 @@ public class MyRender implements GLSurfaceView.Renderer, Camera.PreviewCallback 
     //显示内容的宽高
     private int mImageWidth;
     private int mImageHeight;
-    private GPUImage.ScaleType mScaleType;
 
     public MyRender(GPUImageFilter gpuImageFilter) {
         mFilter = gpuImageFilter;
@@ -116,8 +114,6 @@ public class MyRender implements GLSurfaceView.Renderer, Camera.PreviewCallback 
                 GPUImageNativeLibrary.YUVtoRBGA(bytes, previewSize.width, previewSize.height, mIntBuffer.array());
                 //绑定纹理Id
                 mGLTextureId = OpenGlUtils.loadTexture(mIntBuffer, previewSize, mGLTextureId);
-                //把数据添加到Camera中
-                camera.addCallbackBuffer(bytes);
 
                 //重新调整宽高
                 if (mImageWidth != previewSize.width) {
@@ -252,31 +248,16 @@ public class MyRender implements GLSurfaceView.Renderer, Camera.PreviewCallback 
         float[] cube = CUBE;
         //根据角度 以及是否选择水平或者垂直旋转 纹理坐标 
         float[] textureCords = TextureRotationUtil.getRotation(mRotation, mFlipHorizontal, mFlipVertical);
-        if (mScaleType == GPUImage.ScaleType.CENTER_CROP) {
-            float distHorizontal = (1 - 1 / ratioWidth) / 2;
-            float distVertical = (1 - 1 / ratioHeight) / 2;
-            textureCords = new float[]{
-                    addDistance(textureCords[0], distHorizontal), addDistance(textureCords[1], distVertical),
-                    addDistance(textureCords[2], distHorizontal), addDistance(textureCords[3], distVertical),
-                    addDistance(textureCords[4], distHorizontal), addDistance(textureCords[5], distVertical),
-                    addDistance(textureCords[6], distHorizontal), addDistance(textureCords[7], distVertical),
-            };
-        } else {
-            cube = new float[]{
-                    CUBE[0] / ratioHeight, CUBE[1] / ratioWidth,
-                    CUBE[2] / ratioHeight, CUBE[3] / ratioWidth,
-                    CUBE[4] / ratioHeight, CUBE[5] / ratioWidth,
-                    CUBE[6] / ratioHeight, CUBE[7] / ratioWidth,
-            };
-        }
+        cube = new float[]{
+                CUBE[0] / ratioHeight, CUBE[1] / ratioWidth,
+                CUBE[2] / ratioHeight, CUBE[3] / ratioWidth,
+                CUBE[4] / ratioHeight, CUBE[5] / ratioWidth,
+                CUBE[6] / ratioHeight, CUBE[7] / ratioWidth,
+        };
 
         mGLCubeBuffer.clear();
         mGLCubeBuffer.put(cube).position(0);
         mGLTextureBuffer.clear();
         mGLTextureBuffer.put(textureCords).position(0);
-    }
-
-    private float addDistance(float coordinate, float distance) {
-        return coordinate == 0.0f ? distance : 1 - distance;
     }
 }
