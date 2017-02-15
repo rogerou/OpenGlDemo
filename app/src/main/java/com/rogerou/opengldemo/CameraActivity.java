@@ -1,6 +1,7 @@
 package com.rogerou.opengldemo;
 
 import android.graphics.ImageFormat;
+import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -42,6 +43,10 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         this.btn2 = (Button) findViewById(R.id.btn2);
         this.btn1 = (Button) findViewById(R.id.btn1);
         this.glview1 = (GLSurfaceView) findViewById(R.id.gl_view1);
+        glview1.setEGLContextClientVersion(2);
+        glview1.setZOrderOnTop(true);
+        glview1.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+        glview1.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         btn1.setOnClickListener(this);
         btn2.setOnClickListener(this);
         mOpenGlController = new OpenGlController(this);
@@ -100,7 +105,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                 if (isFilter) {
                     gpuImageFilters.add(new GPUImageFilter());
                 } else {
-//                gpuImageFilters.add(new MyFrameAnimationFilter(getAssets()));
+                    gpuImageFilters.add(new MyFrameAnimationFilter(getAssets()));
                     gpuImageFilters.add(new MyImagefilter());
                 }
                 mOpenGlController.setFilter(new GroupFilter(gpuImageFilters));

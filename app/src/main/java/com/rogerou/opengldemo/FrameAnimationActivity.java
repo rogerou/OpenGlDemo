@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
-import com.rogerou.opengldemo.filter.MyFrameAnimationFilter;
 import com.rogerou.opengldemo.filter.StateChangeListener;
 import com.rogerou.opengldemo.glsurfaceview.MyAnimationView;
 
@@ -38,16 +37,6 @@ public class FrameAnimationActivity extends AppCompatActivity {
                 }
             }
         });
-//        mGLSurfaceView.setScaleType(Gl2Utils.TYPE_CENTERINSIDE);
-//        mGLSurfaceView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (!mGLSurfaceView.isPlay()) {
-//                    mGLSurfaceView.setAnimation(mAnimation, 50);
-//                    mGLSurfaceView.start();
-//                }
-//            }
-//        });
 
     }
 

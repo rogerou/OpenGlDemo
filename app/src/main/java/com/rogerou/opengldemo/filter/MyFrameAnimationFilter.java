@@ -134,7 +134,7 @@ public class MyFrameAnimationFilter extends GPUImageFilter {
         long s = System.currentTimeMillis() - startTime;
         //这里做了个时间的同步，
         // 如果渲染时间不超过50ms的情况下，
-        // 强行让线程休眠到对应的时间再执行，
+        // 强行让线程休眠到对应的时间再执行，`
         // 保持动画的相对同步
         //可能还需要后续的处理，如超过下个50ms的情况下直接跳过此帧
         if (isPlay) {
