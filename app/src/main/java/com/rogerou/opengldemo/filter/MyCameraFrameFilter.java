@@ -12,19 +12,18 @@ import android.opengl.ETC1;
 import android.opengl.ETC1Util;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.opengl.Matrix;
 import android.util.Log;
 
+import com.rogerou.opengldemo.util.OpenGlUtils;
 import com.rogerou.opengldemo.util.StateChangeListener;
 import com.rogerou.opengldemo.util.ZipPkmReader;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
-import jp.co.cyberagent.android.gpuimage.GPUImageFilter;
-import jp.co.cyberagent.android.gpuimage.OpenGlUtils;
 
-
-public class MyFrameAnimationFilter extends GPUImageFilter {
+public class MyCameraFrameFilter extends GPUImageFilter {
 
 
     public static final String FRAGMENT_SHADER = "precision mediump float;\n" +
@@ -62,14 +61,13 @@ public class MyFrameAnimationFilter extends GPUImageFilter {
     private int mHMatrix;
     private int mHTexture;
 
-    //原始矩阵
-    private float[] matrix = {
-            1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1, 0,
-            0, 0, 0, 1};
+    private int mImageWidth;
 
-    public MyFrameAnimationFilter(AssetManager mRes) {
+    private int mImageHeight;
+
+    private float[] mMatrix;
+
+    public MyCameraFrameFilter(AssetManager mRes) {
         mPkmReader = new ZipPkmReader(mRes);
     }
 
@@ -85,6 +83,7 @@ public class MyFrameAnimationFilter extends GPUImageFilter {
         createEtcTexture(mTexture);
         //创建两个纹理，一个是用来展示图片，一个用来展示透明通道
         mGlHAlpha = GLES20.glGetUniformLocation(mGLProgId, "vTextureAlpha");
+
     }
 
     private void createEtcTexture(int[] texture) {
@@ -109,6 +108,8 @@ public class MyFrameAnimationFilter extends GPUImageFilter {
     public void onOutputSizeChanged(int width, int height) {
         super.onOutputSizeChanged(width, height);
         mByteBuffer = ByteBuffer.allocateDirect(ETC1.getEncodedDataSize(width, height));
+        mMatrix = getShowMatrix(mImageWidth, mImageHeight, mOutputWidth, mOutputHeight);
+        flip(mMatrix, true, false);
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
@@ -125,6 +126,14 @@ public class MyFrameAnimationFilter extends GPUImageFilter {
             aTexture = new ETC1Util.ETC1Texture(mOutputWidth, mOutputHeight, mByteBuffer);
             isPlay = false;
         }
+        if (mImageWidth != texture.getWidth() || mImageHeight != texture.getHeight()) {
+            mImageHeight = texture.getHeight();
+            mImageWidth = texture.getWidth();
+            //根据当前帧大小选择变换矩阵
+            mMatrix = getShowMatrix(texture.getWidth(), texture.getHeight(), mOutputWidth, mOutputHeight);
+            flip(mMatrix, true, false);
+        }
+
         for (int i = 0; i < 2; i++) {
             //选择当前激活的纹理
             GLES20.glActiveTexture(i == 0 ? GLES20.GL_TEXTURE0 : GLES20.GL_TEXTURE1);
@@ -139,7 +148,6 @@ public class MyFrameAnimationFilter extends GPUImageFilter {
 
     @Override
     public void onDraw(int textureId, FloatBuffer cubeBuffer, FloatBuffer textureBuffer) {
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         GLES20.glUseProgram(mGLProgId);
         if (time != 0) {
@@ -147,13 +155,13 @@ public class MyFrameAnimationFilter extends GPUImageFilter {
         }
         time = System.currentTimeMillis();
         long startTime = System.currentTimeMillis();
-        GLES20.glUniformMatrix4fv(mHMatrix, 1, false, matrix, 0);
+        GLES20.glUniformMatrix4fv(mHMatrix, 1, false, mMatrix, 0);
         BindTexture();
         drawVertex(cubeBuffer, textureBuffer);
         long s = System.currentTimeMillis() - startTime;
         //这里做了个时间的同步，
         // 如果渲染时间不超过50ms的情况下，
-        // 强行让线程休眠到对应的时间再执行，`
+        // 强行让线程休眠到对应的时间再执行，
         // 保持动画的相对同步
         //可能还需要后续的处理，如超过下个50ms的情况下直接跳过此帧
         if (isPlay) {
@@ -222,5 +230,37 @@ public class MyFrameAnimationFilter extends GPUImageFilter {
         }
     }
 
+    //通过传入图片宽高和预览宽高，计算变换矩阵，得到的变换矩阵是预览类似ImageView的centerCrop效果
+
+    public static float[] getShowMatrix(int imgWidth, int imgHeight, int viewWidth, int viewHeight) {
+        float[] projection = new float[16];
+        float[] camera = new float[16];
+        float[] matrix = new float[16];
+
+        float sWhView = (float) viewWidth / viewHeight;
+        float sWhImg = (float) imgWidth / imgHeight;
+        if (sWhImg > sWhView) {
+            Matrix.orthoM(projection, 0, -sWhView / sWhImg, sWhView / sWhImg, -1, 1, 1, 3);
+        } else {
+            Matrix.orthoM(projection, 0, -1, 1, -sWhImg / sWhView, sWhImg / sWhView, 1, 3);
+        }
+        Matrix.setLookAtM(camera, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0);
+        Matrix.multiplyMM(matrix, 0, projection, 0, camera, 0);
+        return matrix;
+    }
+
+    //旋转
+    public static float[] rotate(float[] m, float angle) {
+        Matrix.rotateM(m, 0, angle, 0, 0, 1);
+        return m;
+    }
+
+    //镜像
+    public static float[] flip(float[] m, boolean x, boolean y) {
+        if (x || y) {
+            Matrix.scaleM(m, 0, x ? -1 : 1, y ? -1 : 1, 1);
+        }
+        return m;
+    }
 
 }

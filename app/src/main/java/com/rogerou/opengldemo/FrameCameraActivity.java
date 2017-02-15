@@ -1,7 +1,6 @@
 package com.rogerou.opengldemo;
 
 import android.graphics.ImageFormat;
-import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -11,24 +10,25 @@ import android.widget.Button;
 
 import com.rogerou.opengldemo.camera.MyCameraManger;
 import com.rogerou.opengldemo.controller.OpenGlController;
+import com.rogerou.opengldemo.filter.GPUImageFilter;
 import com.rogerou.opengldemo.filter.GroupFilter;
-import com.rogerou.opengldemo.filter.MyFrameAnimationFilter;
-import com.rogerou.opengldemo.filter.MyImagefilter;
+import com.rogerou.opengldemo.filter.MyCameraFrameFilter;
+import com.rogerou.opengldemo.filter.MyImageFilter;
+import com.rogerou.opengldemo.util.StateChangeListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import jp.co.cyberagent.android.gpuimage.GPUImageFilter;
 
 /**
  * Created by Administrator on 2017/2/9.
  */
 
-public class CameraActivity extends AppCompatActivity implements View.OnClickListener {
+public class FrameCameraActivity extends AppCompatActivity implements View.OnClickListener {
 
 
-    private android.opengl.GLSurfaceView glview1;
-    private android.widget.Button btn1;
+    private GLSurfaceView glview1;
+    private Button btn1;
     private OpenGlController mOpenGlController;
     private MyCameraManger mCameraManger;
     private Camera mCamera;
@@ -40,10 +40,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_camera);
         this.btn1 = (Button) findViewById(R.id.btn1);
         this.glview1 = (GLSurfaceView) findViewById(R.id.gl_view1);
-        glview1.setEGLContextClientVersion(2);
-        glview1.setZOrderOnTop(true);
-        glview1.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-        glview1.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         btn1.setOnClickListener(this);
         mOpenGlController = new OpenGlController(this);
         mOpenGlController.setGLSurfaceView1(glview1);
@@ -93,20 +89,29 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onClick(View view) {
-        //实现多重渲染效果，但是帧动画无法共存！！！！暂时没思路
+        //实现多重渲染效果,但是发现只是渲染在
         List<GPUImageFilter> gpuImageFilters = new ArrayList<>();
         switch (view.getId()) {
             case R.id.btn1:
-                GPUImageFilter gpuImageFilter;
                 btn1.setText(isFilter ? "开启滤镜" : "关闭滤镜");
                 if (isFilter) {
-                    gpuImageFilter = new GPUImageFilter();
+                    gpuImageFilters.add(new GPUImageFilter());
                 } else {
-                    gpuImageFilter = new MyImageFilter();
+                    MyCameraFrameFilter myFrameAnimationFilter = new MyCameraFrameFilter(getAssets());
+                    myFrameAnimationFilter.setStateChangeListener((lastState, nowState) -> {
+                        if (nowState == StateChangeListener.STOP) {
+                            myFrameAnimationFilter.setAnimation(glview1, "assets/cc.zip", 50);
+                            myFrameAnimationFilter.start();
+                        }
+                    });
+                    myFrameAnimationFilter.setAnimation(glview1, "assets/cc.zip", 50);
+                    myFrameAnimationFilter.start();
+                    gpuImageFilters.add(myFrameAnimationFilter);
+                    gpuImageFilters.add(new MyImageFilter());
                 }
-                mOpenGlController.setFilter(gpuImageFilter);
+                mOpenGlController.setFilter(new GroupFilter(gpuImageFilters));
                 isFilter = !isFilter;
-                break;
+
         }
 
     }

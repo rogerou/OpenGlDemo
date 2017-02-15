@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.hardware.Camera;
 import android.view.Surface;
 
+
 /**
  * Created by Administrator on 2017/2/10.
  */
@@ -49,7 +50,6 @@ public class MyCameraManger {
         }
 
         int result;
-
         Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
         Camera.getCameraInfo(cameraId, cameraInfo);
         if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {

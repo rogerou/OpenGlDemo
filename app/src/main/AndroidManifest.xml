@@ -43,6 +43,8 @@
         <activity android:name=".CameraActivity"/>
 
         <activity android:name=".FrameAnimationActivity"/>
+
+        <activity android:name=".FrameCameraActivity"/>
     </application>
 
 

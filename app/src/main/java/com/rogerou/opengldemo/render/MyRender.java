@@ -5,6 +5,8 @@ import android.hardware.Camera;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 
+import com.rogerou.opengldemo.filter.GPUImageFilter;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -16,7 +18,6 @@ import java.util.Queue;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import jp.co.cyberagent.android.gpuimage.GPUImageFilter;
 import jp.co.cyberagent.android.gpuimage.GPUImageNativeLibrary;
 import jp.co.cyberagent.android.gpuimage.OpenGlUtils;
 import jp.co.cyberagent.android.gpuimage.Rotation;
@@ -34,49 +35,49 @@ public class MyRender implements GLSurfaceView.Renderer, Camera.PreviewCallback 
     /**
      * OpenGl的滤镜，继承此Filter实现不同的效果
      */
-    private GPUImageFilter mFilter;
+    GPUImageFilter mFilter;
     /**
      * 配合GlSurfaceView 预览的所需SurfaceTexture
      */
-    private SurfaceTexture mSurfaceTexture = null;
+    SurfaceTexture mSurfaceTexture = null;
     /**
      * 顶点坐标
      */
-    private final FloatBuffer mGLCubeBuffer;
+    FloatBuffer mGLCubeBuffer;
 
     /**
      * 纹理坐标
      */
-    private final FloatBuffer mGLTextureBuffer;
+    FloatBuffer mGLTextureBuffer;
     /**
      * 纹理Id
      */
-    private int mGLTextureId = -1;
+    int mGLTextureId = -1;
     /**
      * 两个Draw队列
      * 一个是Draw时
      * 一个是Draw后
      */
-    private final Queue<Runnable> runOnDraw;
-    private final Queue<Runnable> runOnDrawEnd;
+    Queue<Runnable> runOnDraw;
+    Queue<Runnable> runOnDrawEnd;
     /**
      * Surface的宽高
      */
-    private int mOutputWidth;
-    private int mOutputHeight;
+    int mOutputWidth;
+    int mOutputHeight;
     /**
      * 用来创建RGBA的纹理
      */
-    private IntBuffer mIntBuffer;
+    IntBuffer mIntBuffer;
     //是否应该水平旋转
-    private boolean mFlipHorizontal;
+    boolean mFlipHorizontal;
     //是否应该垂直旋转
-    private boolean mFlipVertical;
+    boolean mFlipVertical;
     //旋转的角度
-    private Rotation mRotation;
+    Rotation mRotation;
     //显示内容的宽高
-    private int mImageWidth;
-    private int mImageHeight;
+    int mImageWidth;
+    int mImageHeight;
 
     public MyRender(GPUImageFilter gpuImageFilter) {
         mFilter = gpuImageFilter;
@@ -195,7 +196,7 @@ public class MyRender implements GLSurfaceView.Renderer, Camera.PreviewCallback 
         });
     }
 
-    private void runAll(Queue<Runnable> queue) {
+    void runAll(Queue<Runnable> queue) {
         synchronized (queue) {
             while (!queue.isEmpty()) {
                 queue.poll().run();
@@ -204,14 +205,14 @@ public class MyRender implements GLSurfaceView.Renderer, Camera.PreviewCallback 
     }
 
     //加入Draw队列
-    private void addOnDraw(Runnable runnable) {
+    void addOnDraw(Runnable runnable) {
         synchronized (runOnDraw) {
             runOnDraw.add(runnable);
         }
     }
 
     //加入DrawEnd队列
-    private void addOnDrawEnd(Runnable runnable) {
+    void addOnDrawEnd(Runnable runnable) {
         synchronized (runOnDrawEnd) {
             runOnDrawEnd.add(runnable);
         }
@@ -228,7 +229,7 @@ public class MyRender implements GLSurfaceView.Renderer, Camera.PreviewCallback 
     /**
      * 根据对比屏幕内容和屏幕大小比例放缩纹理
      */
-    private void adjustImageScaling() {
+    void adjustImageScaling() {
         float outputWidth = mOutputWidth;
         float outputHeight = mOutputHeight;
         if (mRotation == Rotation.ROTATION_270 || mRotation == Rotation.ROTATION_90) {

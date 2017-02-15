@@ -1,12 +1,11 @@
 package com.rogerou.opengldemo.filter;
 
-import jp.co.cyberagent.android.gpuimage.GPUImageFilter;
 
 /**
  * Created by Administrator on 2017/2/10.
  */
 
-public class MyImagefilter extends GPUImageFilter {
+public class MyImageFilter extends GPUImageFilter {
 
     /**
      * uniform 由外部程序传递给 shader，就像是C语言里面的常量，shader 只能用不能改；
@@ -26,7 +25,7 @@ public class MyImagefilter extends GPUImageFilter {
             " }";
 
 
-    public MyImagefilter() {
+    public MyImageFilter() {
         super(NO_FILTER_VERTEX_SHADER, FRAGMENT_SHADER);
     }
 

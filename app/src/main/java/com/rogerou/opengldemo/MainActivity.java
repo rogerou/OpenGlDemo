@@ -9,7 +9,7 @@ import android.widget.ListView;
 
 public class MainActivity extends ListActivity {
     private final String tests[] =
-            {"Triangle", "TriangleColor", "Demo", "Camera", "FrameAnimation"};
+            {"Triangle", "TriangleColor", "Demo", "Camera", "FrameAnimation", "CameraFrame"};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,6 +38,9 @@ public class MainActivity extends ListActivity {
             default:
             case 4:
                 intent.setClass(this, FrameAnimationActivity.class);
+                break;
+            case 5:
+                intent.setClass(this, FrameCameraActivity.class);
                 break;
         }
         startActivity(intent);

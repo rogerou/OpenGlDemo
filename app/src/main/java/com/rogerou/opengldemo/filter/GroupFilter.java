@@ -5,7 +5,6 @@ import android.opengl.GLES20;
 import java.nio.FloatBuffer;
 import java.util.List;
 
-import jp.co.cyberagent.android.gpuimage.GPUImageFilter;
 
 /**
  * Created by Administrator on 2017/2/14.

@@ -13,7 +13,7 @@ import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 
 import com.rogerou.opengldemo.filter.MyFrameAnimationFilter;
-import com.rogerou.opengldemo.filter.StateChangeListener;
+import com.rogerou.opengldemo.util.StateChangeListener;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -34,6 +34,8 @@ public class MyAnimationView extends GLSurfaceView implements GLSurfaceView.Rend
 
     private FloatBuffer mTextureBuffer;
     private FloatBuffer mVertexBuffer;
+
+
     //顶点坐标
     private float mVertext[] = {
             -1.0f, 1.0f,
@@ -81,9 +83,9 @@ public class MyAnimationView extends GLSurfaceView implements GLSurfaceView.Rend
         setRenderer(this);
         setRenderMode(RENDERMODE_WHEN_DIRTY);
         mAnimationFilter = new MyFrameAnimationFilter(getResources().getAssets());
-
     }
 
+ 
 
     public void setAnimation(String path, int timeStep) {
         mAnimationFilter.setAnimation(this, path, timeStep);
