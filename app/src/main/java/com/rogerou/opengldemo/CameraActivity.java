@@ -11,14 +11,12 @@ import android.widget.Button;
 
 import com.rogerou.opengldemo.camera.MyCameraManger;
 import com.rogerou.opengldemo.controller.OpenGlController;
-import com.rogerou.opengldemo.filter.GroupFilter;
-import com.rogerou.opengldemo.filter.MyFrameAnimationFilter;
-import com.rogerou.opengldemo.filter.MyImagefilter;
+import com.rogerou.opengldemo.filter.GPUImageFilter;
+import com.rogerou.opengldemo.filter.MyImageFilter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import jp.co.cyberagent.android.gpuimage.GPUImageFilter;
 
 /**
  * Created by Administrator on 2017/2/9.

@@ -21,7 +21,10 @@ import java.util.List;
 
 
 /**
- * Created by Administrator on 2017/2/9.
+ * Created by Administrator on 2017/2/15.
+ * <p>
+ * 开了滤镜只能显示滤镜和帧动画。。。。。
+ * 时间和个人领悟有限，目前尚未找到解决方案
  */
 
 public class FrameCameraActivity extends AppCompatActivity implements View.OnClickListener {
@@ -89,7 +92,6 @@ public class FrameCameraActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onClick(View view) {
-        //实现多重渲染效果,但是发现只是渲染在
         List<GPUImageFilter> gpuImageFilters = new ArrayList<>();
         switch (view.getId()) {
             case R.id.btn1:
