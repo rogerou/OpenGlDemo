@@ -110,8 +110,8 @@ public class FBORender implements GLSurfaceView.Renderer {
                     GLES20.GL_RENDERBUFFER, fRender[0]);
             GLES20.glViewport(0, 0, mBitmap.getWidth(), mBitmap.getHeight());
             //以第一个纹理数据源开始Draw
-            mFilter.onDraw(fTexture[0], mGLCubeBuffer, mGLTextureBuffer);
             //把数据转为Rgba存到Buffer里
+            mFilter.onDraw(fTexture[0], mGLCubeBuffer, mGLTextureBuffer);
             GLES20.glReadPixels(0, 0, mBitmap.getWidth(), mBitmap.getHeight(), GLES20.GL_RGBA,
                     GLES20.GL_UNSIGNED_BYTE, mBuffer);
             deleteEnvi();

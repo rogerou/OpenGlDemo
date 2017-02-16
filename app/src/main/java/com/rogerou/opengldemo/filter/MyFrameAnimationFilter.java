@@ -119,7 +119,6 @@ public class MyFrameAnimationFilter extends GPUImageFilter {
         ETC1Util.ETC1Texture texture = mPkmReader.getNextTexture();
         ETC1Util.ETC1Texture aTexture = mPkmReader.getNextTexture();
         //当为空时当前播放已经完毕，即置一个没有数据的空纹理渲染到屏幕并停止播放
-
         if (texture == null || aTexture == null) {
             texture = new ETC1Util.ETC1Texture(mOutputWidth, mOutputHeight, mByteBuffer);
             aTexture = new ETC1Util.ETC1Texture(mOutputWidth, mOutputHeight, mByteBuffer);

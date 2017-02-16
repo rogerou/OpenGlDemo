@@ -65,7 +65,7 @@ public class GPUImageFilter {
     }
 
     public GPUImageFilter(final String vertexShader, final String fragmentShader) {
-        mRunOnDraw = new LinkedList<Runnable>();
+        mRunOnDraw = new LinkedList<>();
         mVertexShader = vertexShader;
         mFragmentShader = fragmentShader;
     }

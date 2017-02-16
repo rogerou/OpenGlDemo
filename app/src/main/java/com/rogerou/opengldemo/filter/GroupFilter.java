@@ -67,7 +67,7 @@ public class GroupFilter extends GPUImageFilter {
 
 
                 GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, mFrameBuffers[i]);
-                //绑定纹理到FrameBuffer
+                //绑定需要绘制的纹理到FrameBuffer
                 GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0,
                         GLES20.GL_TEXTURE_2D, mFrameBufferTextures[i], 0);
 
