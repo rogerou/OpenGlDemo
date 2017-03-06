@@ -1,10 +1,4 @@
-/*
- *
- * ZipMulDrawer.java
- * 
- * Created by Wuwang on 2016/12/8
- * Copyright © 2016年 深圳哎吖科技. All rights reserved.
- */
+
 package com.rogerou.opengldemo.filter;
 
 import android.content.res.AssetManager;
